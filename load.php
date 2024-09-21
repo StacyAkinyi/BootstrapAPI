@@ -28,5 +28,9 @@ $Objlayout = new layout();
 $ObjMenus = new menus();
 $Objheadings = new headings();
 $ObjContents= new contents();
+$conn = new dbConnection(DBTYPE, HOSTNAME, DBPORT, HOSTUSER, HOSTPASS, DBNAME);
 
+//Create process instances
+$ObjAuth = new auth();
+$ObjAuth->signup($conn);
 ?>
