@@ -24,12 +24,6 @@ public function sign_up_form(){
                         <label for="email">Email:</label><br>
                         <input type="email" id="email" name="email" required><br><br>
                     </div>
-
-                    <div class="mb-3">
-                        <label for="password">Password:</label><br> 
-                        <input type="password" id="password" name="password" required><br><br>
-                    </div>
-
                     <button type="submit" name="submit" class="btn btn-primary">Submit</button>	
 
                 
