@@ -7,11 +7,11 @@ require "includes/dbConnection.php";
 
 //Class AutoLoad
 function classAutoLoad($classname){
-    $directories = ["Content", "layout", "menus"];
+    $directories = ["Content", "layout", "menus", "forms", "processes", "global"];
 
-    foreach($directories as $dir){
+    foreach($directories AS $dir){
         $filename =  dirname(__FILE__). DIRECTORY_SEPARATOR . $dir . DIRECTORY_SEPARATOR . $classname . ".php";
-        if(file_exists($filename) && is_readable($filename)){
+        if(file_exists($filename) AND is_readable($filename)){
             require_once $filename;
         }
     } 
@@ -27,7 +27,8 @@ $Objlayout = new layout();
 $ObjMenus = new menus();
 $Objheadings = new headings();
 $ObjContents= new contents();
-$ObjForm = new signup-form();
+
+$ObjForm = new signup_form();
 $conn = new dbConnection(DBTYPE, HOSTNAME, DBPORT, HOSTUSER, HOSTPASS, DBNAME);
 
 //Create process instances
