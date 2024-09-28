@@ -43,4 +43,40 @@
                     break;
             }
         }
+   /**************************************************************************************************
+ * MySQLi Real Escape String (tested) Method
+ ***************************************************************************************************/
+        public function escape_values($posted_values): string{
+            switch($this->db_type){
+                case 'PDO' :
+                     $this->posted_values = addlashes($posted_values);
+                    break;
+                case 'MySQLi' :
+                    $this->posted_values = $this->connection->real_escape_string($posted_values);
+                    break;
+            }
+            return $this->posted_values;
+        }
+/**************************************************************************************************
+ * Count Returned Results (tested) Method
+ ***************************************************************************************************/
+       public function count_results($sql){
+            switch($this->db_type){
+                case 'PDO' :
+                    $res = $this->connection->prepare($sql);
+                    $res->execute();
+                    return $res->rowCount();
+                    break;
+                case 'MySQLi' :
+                    if(is-object($this->connection->query($sql))){
+                    $result = $this->connection->query($sql);
+                    $result = $result->num_rows;
+                    }else {
+                        print "Error 5: " . $sql . "<br/>" . $this->connection->error . "<br/>";
+                    }
+                    break;
+            
+            }
+            
+        }
     }
