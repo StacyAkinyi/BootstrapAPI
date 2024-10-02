@@ -62,7 +62,7 @@ if(!count($errors)){
 
         if ($insert === TRUE){
             header('Location: signup.php');
-            unset($_SESSION["fullname"], $_SESSION["email"], $_SESSION["username"]);
+            unset($_SESSION["fullname"], $_SESSION["username"], $_SESSION["email"]);
             exit();
         }else{
             die($insert);

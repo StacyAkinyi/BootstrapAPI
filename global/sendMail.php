@@ -1,12 +1,13 @@
 <?php
-class sendMail{
+
 //Import PHPMailer classes into the global namespace
 //These must be at the top of your script, not inside a function
-public function sendMail(){
+
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\SMTP;
 use PHPMailer\PHPMailer\Exception;
-
+class sendMail{
+public function sendMail(){
 //Load Composer's autoloader
 require 'vendor/autoload.php';
 
