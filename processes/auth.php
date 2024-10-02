@@ -1,6 +1,6 @@
 <?php
 class auth{
-    public function signup($conn){
+    public function signup($conn, $ObjGlob){
         if (isset($_POST['submit'])) {
 
             $errors = array();
@@ -14,7 +14,7 @@ class auth{
 // =============================================
 // Sanitize all inputs
 // verify that the fullname has only letters, space, dash, quotation
-if(ctype_alpha(str_replace("","", strt_replace("\'", "", $fullname))) === FALSE){
+if(ctype_alpha(str_replace("","", str_replace("\'", "", $fullname))) === FALSE){
     $errors['nameLetters_err'] = "Invalid name format: Fullname should only contain letters, spaces, dashes and quotes" . $fullname;
 }
 // verify that the email has got the correct format
