@@ -34,4 +34,3 @@ $conn = new dbConnection(DBTYPE, HOSTNAME, DBPORT, HOSTUSER, HOSTPASS, DBNAME);
 //Create process instances
 $ObjAuth = new auth();
 $ObjAuth->signup($conn, $ObjGlob);
-?>

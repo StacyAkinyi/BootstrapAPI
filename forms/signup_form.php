@@ -12,13 +12,13 @@ public function sign_up_form($ObjGlob){
                     print $ObjGlob->getMsg('msg');
                     $err = $ObjGlob->getMsg('errors');
                     ?>
-                    <form action="<?php print basename($_SERVER["PHP_SELF"]); ?>" method="post" enctype="miltipart/form-data"> 
+                    <form action="<?php print basename($_SERVER["PHP_SELF"]); ?>" method="post" enctype="multipart/form-data"> 
 
                     <div class="mb-3"> 
                         <label for="fullname" class="form-label">Full Name:</label>
                         <input type="text" id="fullname" name="fullname" class="form-control form-control-lg" maxlength="50" placeholder="Enter your name..." <?php print(isset($_SESSION["fullname"]))? 'value"' . $_SESSION["fullname"]. '"' : ''; unset($_SESSION["fullname"]); ?> >
 
-                        <?php print (isset($err['nameLetters_err']))? '<span class="invalid">' . $err['nameLetters_err'] . '</span>' : ''; ?>
+                        <?php print (isset($err['nameLetters_err']))? "<span class='invalid'>" . $err['nameLetters_err'] . "</span>" : ''; ?>
                     </div>
 
                     <div class="mb-3">
@@ -35,7 +35,7 @@ public function sign_up_form($ObjGlob){
                         <?php print (isset($err['mailExists_err']))? '<span class="invalid">' . $err['mailExists_err'] . '</span>' : ''; ?>
                         <?php print (isset($err['mailDomain_err']))? '<span class="invalid">' . $err['mailDomain_err'] . '</span>' : ''; ?>
                     </div>
-                    <button type="submit" name="submit" class="btn btn-primary">Submit</button>	
+                    <button type="submit" name="signup" class="btn btn-primary">Submit</button>	
 
                 
                     </form>  
