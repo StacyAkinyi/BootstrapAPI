@@ -15,6 +15,8 @@ In order to use this account you need to <a href= '" . $conf['site_url'] . "/ges
 
 Or use unique code <p><b> {{unlock_token_pass}} </b></p> to verify your account.
 
+Unique code expires after 24 hours.
+
 Regards,
 Systems Administrator
 {{site_full_name}}
