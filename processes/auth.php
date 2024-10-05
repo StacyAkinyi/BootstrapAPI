@@ -1,4 +1,5 @@
 <?php
+
 class auth{
 
 
@@ -127,11 +128,11 @@ public function verify_code($conn, $ObjGlob, $ObjSendMail, $lang, $conf){
     }
 }
 }
-public function set_password($conn, $ObjGlob){
+public function set_password($conn, $ObjGlob, $ObjSendMail, $lang, $conf){
     if (isset($_POST["set_password"])){
         $errors = array();
-        $password = $conn->escape_values($_POST["password"]);
-        $repeat_password = $conn->escape_values($_POST["repeat_password"]);
+        $password = $_SESSION['password']= $conn->escape_values($_POST['password']);
+        $repeat_password = $_SESSION['repeat_password']= $conn->escape_values($_POST['repeat_password']);
         
 
         if (strlen($password) <8){
@@ -142,17 +143,19 @@ public function set_password($conn, $ObjGlob){
         }
         
         if (!count($errors)){
+
             $password = password_hash($password, PASSWORD_DEFAULT);
 
-            $email = $_SESSION['email'];
-            $update = $conn->update('users', ['password' => $password], ['email' => $email]);
+           $userId = $_SESSION['userId'];
+           $update = $conn->update('users', ['password' => $password], ['userId' => $userId]);
             if ($update === TRUE){
 
                 $ObjGlob->setMsg('msg', 'Password set successfully', 'valid');  
-                header('Location: login.php');
-                unset($_SESSION["email"]);
+                header('Location: profile.php');
+                unset($_SESSION["password"], $_SESSION["repeat_password"], $_SESSION["userId"]);
                 exit();
             }else{
+                echo "Error: " . $update;
                 die($update);
             }
         }else{

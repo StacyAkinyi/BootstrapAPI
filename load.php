@@ -38,4 +38,4 @@ $conn = new dbConnection(DBTYPE, HOSTNAME, DBPORT, HOSTUSER, HOSTPASS, DBNAME);
 $ObjAuth = new auth();
 $ObjAuth->signup($conn, $ObjGlob, $ObjSendMail, $lang, $conf);
 $ObjAuth->verify_code($conn, $ObjGlob, $ObjSendMail, $lang, $conf);
-$ObjAuth->set_password($conn, $ObjGlob);
+$ObjAuth->set_password($conn, $ObjGlob, $ObjSendMail, $lang, $conf);
