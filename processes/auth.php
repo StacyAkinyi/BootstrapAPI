@@ -10,7 +10,7 @@ class auth{
 
 
 
-    public function signup($conn, $ObjGlob, $lang, $ObjSendMail, $conf){
+    public function signup($conn, $ObjGlob, $ObjSendMail, $lang, $conf){
         if (isset($_POST["signup"])) {
 
             $errors = array();
@@ -95,11 +95,11 @@ if(!count($errors)){
 }
 }
 
-public function verify_code($conn, $ObjGlob, $lang, $ObjSendMail, $conf){
+public function verify_code($conn, $ObjGlob, $ObjSendMail, $lang, $conf){
     if (isset($_POST["verify_code"])){
         $errors = array();
 
-        $ver_code= $_SESSION["ver_code"]=$conn->escape_values($_POST["ver_code"]);
+        $ver_code= $_SESSION["ver_code"]= $conn->escape_values($_POST["ver_code"]);
         if (!is_numeric($ver_code)){
             $errors['not_numeric'] = "Invalid code format. Verification code must contain numbers only " ;
         }

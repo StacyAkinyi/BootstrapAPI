@@ -13,7 +13,7 @@ You requested an account on {{site_full_name}}.
 
 In order to use this account you need to <a href= '" . $conf['site_url'] . "/ges/verify?tok={{unlock_token_pass}}'>Click Here</a> to complete the registration process.
 
-Or use unique code <p><b> {{unlock_token_pass}} </b></p> to verify your account.
+Or use unique code <p><b> {{verification_code}} </b></p> to verify your account.
 
 Unique code expires after 24 hours.
 
