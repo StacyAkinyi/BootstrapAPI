@@ -1,5 +1,5 @@
 <?php
-$conf['site_url']="http://localhost/BootstrapAPI";
+
 /* Email Messages Templates */
 /* Subjects Templates */
 $lang["AccountVerification"]="Welcome to{{site_full_name}}! Account Verification";

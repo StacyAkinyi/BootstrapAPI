@@ -4,6 +4,8 @@ session_start();
 require "includes/constants.php";
 require "includes/dbConnection.php";
 require "lang/en.php";
+require 'processes/auth.php';
+require 'global/sendMail.php';
 
 
 //Class AutoLoad

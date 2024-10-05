@@ -1,6 +1,7 @@
 <?php
 class auth{
 
+
     public function bind_to_template($replacements, $template){
         return preg_replace_callback('/{{(.+?)}}/', function($matches) use ($replacements){
             return $replacements[$matches[1]];
@@ -10,7 +11,7 @@ class auth{
 
 
     public function signup($conn, $ObjGlob, $lang, $ObjSendMail, $conf){
-        if (isset($_POST['submit'])) {
+        if (isset($_POST["signup"])) {
 
             $errors = array();
             $fullname = $_SESSION['fullname'] = $conn->escape_values(ucwords(strtolower($_POST['fullname'])));
@@ -28,10 +29,10 @@ if(ctype_alpha(str_replace("","", str_replace("\'", "", $fullname))) === FALSE){
 }
 // verify that the email has got the correct format
 if(!filter_var($email, FILTER_VALIDATE_EMAIL)){
-    $errors['email_format_err'] = "Invalid email format: " . $email;
+    $errors['email_format_err'] = "Invalid email format: " ;
 }
 // verify that the email domain is authorized (@strathmore.edu, @gmail.com, @yahoo.com, @mada.co.ke) and not (@yanky.net)
-$conf['valid_domains']=["@strathmore.edu", "@gmail.com", "@yahoo.com", "@mada.co.ke", "@mada.co.ke","@outlook.com", "@STRATHMORE.EDU","@GMAIL.COM", "@YAHOO.COM", "@MADA.CO.KE", "@OUTLOOK.COM"];
+$conf['valid_domains']=["strathmore.edu", "gmail.com", "yahoo.com", "mada.co.ke", "mada.co.ke","outlook.com", "STRATHMORE.EDU","GMAIL.COM", "YAHOO.COM", "MADA.CO.KE", "OUTLOOK.COM"];
 
 $arr_email = explode("@", $email);
 $spot_dom = end($arr_email);
@@ -66,15 +67,15 @@ if(ctype_alpha($username) === FALSE){
 // Verify that the password is identical to the repeat passsword
 // verify that the password length is between 4 and 8 characters
 if(!count($errors)){
-    $cols = array('fullname', 'username', 'email','ver-code', 'ver_code-time' );
-    $vals = array($fullname, $username, $email, $conf['verification_code'],$conf['verification_code_time']);
+    $cols = array('fullname', 'username', 'email','ver_code', 'ver_code_time' );
+    $vals = array($fullname, $username, $email, $conf['verification_code'],$conf['ver_code_time']);
     $data= array_combine($cols, $vals);
     $insert = $conn->insert('users', $data);
 
     if ($insert === TRUE){
         $replacements = array('fullname'=> $fullname,'email'=>$email, 'verification_code' => $conf['verification_code'], 'site_full_name' => strtoupper($conf['site_initials']));
 
-        $ObjSendMail->SendMail($mail, [
+        $ObjSendMail->sendMail( [
             'to_name'=> $fullname,
             'to_email'=> $email,
             'subject'=> $this->bind_to_template($replacements, $lang['AccountVerification']),

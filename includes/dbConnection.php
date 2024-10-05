@@ -68,7 +68,7 @@
                     return $res->rowCount();
                     break;
                 case 'MySQLi' :
-                    if(is-object($this->connection->query($sql))){
+                    if(is_object($this->connection->query($sql))){
                     $result = $this->connection->query($sql);
                     $result = $result->num_rows;
                     }else {
@@ -87,7 +87,7 @@
         $fieldDetails = NULL;
         $fieldNames = implode('`, `',  array_keys($data));
         $fieldValues = implode("', '",  array_values($data));
-        $sth = "INSERT INTO $table ($fieldNames) VALUES ('$fieldValues')";
+        $sth = "INSERT INTO $table (`$fieldNames`) VALUES ('$fieldValues')";
         return $this->extracted($sth);
     }
 /**********************************
