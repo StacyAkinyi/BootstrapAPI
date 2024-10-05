@@ -9,7 +9,7 @@ class auth{
 
 
 
-    public function signup($conn, $ObjGlob){
+    public function signup($conn, $ObjGlob, $lang, $ObjSendMail, $conf){
         if (isset($_POST['submit'])) {
 
             $errors = array();
