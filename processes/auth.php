@@ -13,9 +13,9 @@ class auth{
         if (isset($_POST['submit'])) {
 
             $errors = array();
-            $fullname = $_POST['fullname'] = $conn->escape_values(ucwords(strtolower($_POST['fullname'])));
-            $username = $_POST['username']= $conn->escape_values(strtolower($_POST['username']));
-            $email = $_POST['email'] = $conn->escape_values(strtolower($_POST['email']));
+            $fullname = $_SESSION['fullname'] = $conn->escape_values(ucwords(strtolower($_POST['fullname'])));
+            $username = $_SESSION['username']= $conn->escape_values(strtolower($_POST['username']));
+            $email = $_SESSION['email'] = $conn->escape_values(strtolower($_POST['email']));
             
 
 
@@ -43,6 +43,7 @@ if(!in_array($spot_dom, $conf['valid_domains'])){
 $exist_count = 0;
 // verify if the email alredy exists in the database
 $spot_email_res= $conn-> count_results(sprintf("SELECT email FROM users WHERE email = '%s' LIMIT 1", $email));
+// die($spot_email_res)
 if($spot_email_res > $exist_count){
     $errors['mailExists_err'] = "Email already exists: " ;
 }
@@ -60,6 +61,73 @@ if(ctype_alpha($username) === FALSE){
 // Implement 2FA (email => PHP-Mailer)
 // ===================================
 // Send email verification with an OTP (OTC)
+if(!count($errors)){
+    $cols = array('fullname', 'username', 'email','ver-code', 'ver_code-time' );
+    $vals = array($fullname, $username, $email, $conf['verification_code'],$conf['verification_code_time']);
+    $data= array_combine($cols, $vals);
+    $insert = $conn->insert('users', $data);
+
+    if ($insert === TRUE){
+        $replacements = array('fullname'=> $fullname,'email'=>$email, 'verification_code' => $conf['verification_code'], 'site_full_name' => strtoupper($conf['site_initials']));
+
+        $ObjSendMail->SendMail($mail, [
+            'to_name'=> $fullname,
+            'to_email'=> $email,
+            'subject'=> $this->bind_to_template($replacements, $lang['AccountVerification']),
+            'message'=> $this->bind_to_template($replacements, $lang['AccRegVer_template'])
+        ]);
+        header('Location: verify_code.php');
+        unset($_SESSION["fullname"], $_SESSION["username"], $_SESSION["email"]);
+        exit();
+    }else{
+        die($insert);
+    }
+
+    }else{
+        $ObjGlob->setMsg('msg', 'Error(s)', 'invalid');
+        $ObjGlob->setMsg('errors', $errors, 'invalid');
+    }
+}
+}
+
+public function verify_code($conn, $ObjGlob, $lang, $ObjSendMail, $conf){
+    if (isset($_POST["verify_code"])){
+        $errors = array();
+
+        $ver_code= $_SESSION["ver_code"]=$conn->escape_values($_POST["ver_code"]);
+        if (!is_numeric($ver_code)){
+            $errors['not_numeric'] = "Invalid code format. Verification code must contain numbers only " ;
+        }
+        if(strlen($ver_code) !== 6){
+            $errors['code_length'] = "Invalid code length. Verification code must contain 6 numbers only " ;
+
+        }
+        $spot_ver_code_res = $conn->count_results(sprintf("SELECT ver_code FROM users WHERE ver_code = '%d' LIMIT 1", $ver_code));
+
+        if ($spot_ver_code_res === 0){
+            $errors['ver_code_not-exist'] = "Invalid code. Verification code not found " ;
+        }else{
+            $spot_ver_time_res = $conn->count_results(sprintf("SELECT ver_code, ver_code_time FROM users WHERE ver_code = '%d' AND ver_code_time > now() LIMIT 1", $ver_code));
+            if ($spot_ver_time_res === 0){
+                $errors['ver_code_expired'] = "Invalid code. Verification code has expired " ;
+            }
+        }
+        if (!count($errors)){
+            $_SESSION['code_verified'] = $ver_code;
+            header('Location: create_password.php');
+
+        }else{
+            $ObjGlob->setMsg('msg', 'Error(s)', 'invalid');
+            $ObjGlob->setMsg('errors', $errors, 'invalid');
+    }
+}
+
+}
+
+
+
+
+
 $verification_code = rand(100000, 999999);
 $msg['verify_code_sbj'] = 'Verify Code ICS';
 $msg['verify_code_msg'] = "Your verification code is:  .<p><b>" . $verification_code. "</b></p>";
