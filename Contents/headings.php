@@ -8,6 +8,7 @@ class headings{
           <p class="col-md-12 fs-6">This is an individual assignment.</p>
           <button class="btn btn-primary btn-lg" type="button">Example button</button>
         </div>
+        </div>
             <?php
     }
 }

@@ -7,7 +7,7 @@ use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\SMTP;
 use PHPMailer\PHPMailer\Exception;
 class sendMail{
-public function sendMail(){
+public function sendMail($mailMsg){
 //Load Composer's autoloader
 require 'pluggins/PHPMailer/vendor/autoload.php';
 
@@ -26,7 +26,7 @@ try {
     $mail->Port       = 465;                                    //TCP port to connect to; use 587 if you have set `SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS`
 
     //Recipients
-    $mail->setFrom('ashamoon.anti@gmail.com', 'AshaMoon');
+    $mail->setFrom('ashamoon.anti@gmail.com', 'ICS 2024');
     $mail->addAddress($mailMsg['to_email'], $mailMsg['to_name']);     //Add a recipient
     //$mail->addAddress('ellen@example.com');               //Name is optional
     //$mail->addReplyTo('info@example.com', 'Information');
