@@ -41,8 +41,36 @@ public function sign_up_form($ObjGlob){
                     </form>  
                 </div>
             </div>
-        
+        </div>
         
         <?php
+    } public function verify_code_form($ObjGlob){
+        ?>
+        <div class="row align-items-md-stretch">
+            <div class="col-md-6">
+                <div class="h-100 p-5 text-bg-dark rounded-3"> 
+                    <h2>Verify Code</h2>
+                    <?php
+                    print $ObjGlob->getMsg('msg');
+                    $err = $ObjGlob->getMsg('errors');
+                    ?>
+                    <form action="<?php print basename($_SERVER["PHP_SELF"]); ?>" method="post" enctype="multipart/form-data"> 
+
+                    <div class="mb-3"> 
+                        <label for="verify" class="form-label">Verification Code:</label>
+                        <input type="number" id="ver_code" name="ver-code" class="form-control form-control-lg" maxlength="6" min="100000" max="999999" placeholder="Enter your verification code..." <?php print(isset($_SESSION["ver_code"]))? 'value"' . $_SESSION["ver_code"]. '"' : ''; unset($_SESSION["ver_code"]); ?> >
+                        <?php print (isset($err['not_numeric']))? "<span class='invalid'>" . $err['not_numeric'] . "</span>" : ''; ?>
+                        <?php print (isset($err['length_err']))? "<span class='invalid'>" . $err['length_err'] . "</span>" : ''; ?>
+                        <?php print (isset($err['ver_code_not_exist']))? "<span class='invalid'>" . $err['ver_code_not_exist'] . "</span>" : ''; ?>
+                        <?php print (isset($err['ver_code_expired']))? "<span class='invalid'>" . $err['ver_code_expired'] . "</span>" : ''; ?>
+                    </div>
+                    <button type="submit" name="verify_code" class="btn btn-primary">Verify</button>	
+                    <form>
+                </div>
+            </div>
+        </div>
+        
+
+    <?php                    
     }
 }
