@@ -126,6 +126,40 @@ public function verify_code($conn, $ObjGlob, $ObjSendMail, $lang, $conf){
             $ObjGlob->setMsg('errors', $errors, 'invalid');
     }
 }
+}
+public function set_password($conn, $ObjGlob){
+    if (isset($_POST["set_password"])){
+        $errors = array();
+        $password = $conn->escape_values($_POST["password"]);
+        $repeat_password = $conn->escape_values($_POST["repeat_password"]);
+        
+
+        if (strlen($password) <8){
+            $errors['password_length'] = "Password length must be at least 8 characters " ;
+        }
+        if ($password !== $repeat_password){
+            $errors['password_match'] = "Passwords do not match " ;
+        }
+        
+        if (!count($errors)){
+            $password = password_hash($password, PASSWORD_DEFAULT);
+
+            $email = $_SESSION['email'];
+            $update = $conn->update('users', ['password' => $password], ['email' => $email]);
+            if ($update === TRUE){
+
+                $ObjGlob->setMsg('msg', 'Password set successfully', 'valid');  
+                header('Location: login.php');
+                unset($_SESSION["email"]);
+                exit();
+            }else{
+                die($update);
+            }
+        }else{
+            $ObjGlob->setMsg('msg', 'Error(s)', 'invalid');
+            $ObjGlob->setMsg('errors', $errors, 'invalid');
+        }
+    }
 
 }
 }

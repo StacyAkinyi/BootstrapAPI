@@ -72,7 +72,7 @@ public function sign_up_form($ObjGlob){
 
 
     <?php                    
-    }public function password(){
+    }public function create_password_form($ObjGlob){
         ?>
         <div class="row align-items-md-stretch">
             <div class="col-md-6">
