@@ -61,6 +61,10 @@ if(ctype_alpha($username) === FALSE){
 // Implement 2FA (email => PHP-Mailer)
 // ===================================
 // Send email verification with an OTP (OTC)
+
+
+// Verify that the password is identical to the repeat passsword
+// verify that the password length is between 4 and 8 characters
 if(!count($errors)){
     $cols = array('fullname', 'username', 'email','ver-code', 'ver_code-time' );
     $vals = array($fullname, $username, $email, $conf['verification_code'],$conf['verification_code_time']);
@@ -123,59 +127,4 @@ public function verify_code($conn, $ObjGlob, $lang, $ObjSendMail, $conf){
 }
 
 }
-
-
-
-
-
-$verification_code = rand(100000, 999999);
-$msg['verify_code_sbj'] = 'Verify Code ICS';
-$msg['verify_code_msg'] = "Your verification code is:  .<p><b>" . $verification_code. "</b></p>";
-
-$_SESSION['mailMsg']= ["to_name" => $fullname, "to_email" => $email];
-$conf['site_initials'] = 'ICS 2024';
-$conf['site_url'] = "http://localhost/BootstrapAPI";
-
-if(isset($_SESSION['mailMsg'])){
-    if(is_array($_SESSION['mailMsg'])){
-        $mailMsg = $_SESSION['mailMsg'];
-        $replacements = array('fullname'=> $_SESSION['mailMsg']['to_name'],'email'=>$_SESSION['mailMsg']['to_email'], 'unlock_token_pass' => $verification_code, 'site_full_name' => strtoupper($conf['site_initials']));
-
-        $ObjSendMail->SendMail($mail, [
-            'to_name'=> $mailMsg['to_name'],
-            'to_email'=> $mailMsg['to_email'],
-            'subject'=> $this->bind_to_template($replacements, $lang['AccountVerification']),
-            'message'=> $this->bind_to_template($replacements, $lang['AccRegVer_template'])
-        ]);
-    }
-}
-
-
-
-
-
-
-// Verify that the password is identical to the repeat passsword
-// verify that the password length is between 4 and 8 characters
-if(!count($errors)){
-        $cols = array('fullname', 'username', 'email');
-        $vals = array($fullname, $username, $email);
-
-        $data= array_combine($cols, $vals);
-        $insert = $conn->insert('users', $data);
-
-        if ($insert === TRUE){
-            header('Location: signup.php');
-            unset($_SESSION["fullname"], $_SESSION["username"], $_SESSION["email"]);
-            exit();
-        }else{
-            die($insert);
-        }
-
-        }else{
-            $ObjGlob->setMsg('msg', 'Error(s)', 'invalid');
-            $ObjGlob->setMsg('errors', $errors, 'invalid');
-        }
-    }
-    }
 }
