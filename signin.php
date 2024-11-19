@@ -1,10 +1,8 @@
 <?php
 require "load.php";
-$ObjGlob->checksignin();
 $Objlayout ->heading();
 $ObjMenus ->main_menus();
 $Objheadings ->main_banner();
-$ObjAuth->profile_form($ObjGlob, $conn);
+$ObjForm ->sign_in_form($ObjGlob);
+$ObjContents ->side_bar();
 $Objlayout ->footer();
-
-?>
