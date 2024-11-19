@@ -144,53 +144,114 @@ public function set_password($conn, $ObjGlob, $ObjSendMail, $lang, $conf){
         
         if (!count($errors)){
 
-            $password = password_hash($password, PASSWORD_DEFAULT);
+            $password = password_hash($repeat_password, PASSWORD_DEFAULT);
 
-           $userId = $_SESSION['userId'];
-           $update = $conn->update('users', ['password' => $password], ['userId' => $userId]);
-            if ($update === TRUE){
+            $cols = ['password', 'ver_code', 'ver_code_time'];
+            $vals = [$hash_pass, 0, $conf['ver_code_timeout']];
+            $where = ['ver_code' => $_SESSION['code_verified']];
 
-                $ObjGlob->setMsg('msg', 'Password set successfully', 'valid');  
-                header('Location: profile.php');
-                unset($_SESSION["password"], $_SESSION["repeat_password"], $_SESSION["userId"]);
-                exit();
+            $data = array_combine($cols, $vals);
+            $insert_passphrase = $conn->update('users', $data, $where);
+            if($insert_passphrase === TRUE){
+                unset($_SESSION['code_verified']);
+                header('Location: signin.php');
             }else{
-                echo "Error: " . $update;
-                die($update);
+                die($insert_passphrase);
             }
         }else{
             $ObjGlob->setMsg('msg', 'Error(s)', 'invalid');
             $ObjGlob->setMsg('errors', $errors, 'invalid');
         }
     }
+}public function signin($conn, $ObjGlob, $ObjSendMail, $lang, $conf){
+    if(isset($_POST["signin"])){
 
-}
-public function profile($conn){
-    // Start the session (if not already started)
-    if (session_status() == PHP_SESSION_NONE) {
-      session_start();
-  }
-  
-    if (isset($_SESSION['userId'])){
-      $userId = $_SESSION['userId'];
-  
-      var_dump($userId);
-      //fetch users data
-      $user= $conn->select("SELECT fullname, username, email FROM users WHERE userId = ?", [$userId]);
-  
-      if($user){
-        echo "<h1>Profile</h1>";
-        echo "<h2>WELCOME TO YOUR PROFILE," . $user['fullname'] . "</h2>";
-        echo "<p><strong>Username: </strong>" . $user['username'] . "</p>";
-        echo "<p><strong>Email: </strong>" . $user['email'] . "</p>";
-      } else {
+        $errors = array();
+        $username = $_SESSION["username"] = $conn->escape_values(strtolower($_POST["username"]));
+        $entered_password = $_SESSION["password"] = $conn->escape_values($_POST["password"]);
         
-        echo "<p>Sorry, user not found</p>";
-      }
-    } else {
-      
-      echo "<p>Sorry, you are not logged in</p>";
-    }
-  
+        // Verify Username Exists
+        $signin_query = (sprintf("SELECT * FROM users WHERE username = '%s' OR email = '%s' LIMIT 1", $username, $username));
+
+        // Counting results
+        $spot_username_res = $conn->count_results($signin_query);
+        if ($spot_username_res == 0){
+            $errors['usernamenot_err'] = "Username does not Exists";
+        }else{
+            // Executing the select query & Create a session.
+            $_SESSION["consort_tmp"] = $conn->select($signin_query);
+
+            // Use the session to fetch the stored password.
+            $stored_password = $_SESSION["consort_tmp"]["password"];
+
+            // Verify the password is correct
+            if(password_verify($entered_password, $stored_password)){
+                // Create the login session
+                $_SESSION["consort"] = $_SESSION["consort_tmp"];
+            }else{
+                unset($_SESSION["consort_tmp"]);
+                $errors['invalid_u_p'] = "Invalid username or password"; 
+            }
+        }
+
+        if(!count($errors)){
+            header('Location: dashboard.php');
+            exit();
+        }else{
+            $ObjGlob->setMsg('msg', 'Error(s)', 'invalid');
+            $ObjGlob->setMsg('errors', $errors, 'invalid');
+        }
     }
 }
+public function signout($conn, $ObjGlob, $ObjSendMail, $lang, $conf){
+    if(isset($_GET["signout"])){
+        unset($_SESSION['consort']);
+        header('Location: '.  $conf['site_url']);
+        exit();
+    }
+}
+public function save_details($conn, $ObjGlob, $ObjSendMail, $lang, $conf){
+    if(isset($_POST["save_details"])){
+        $errors = array();
+        $genderId = $_SESSION["genderId"] = $conn->escape_values($_POST["genderId"]);
+        $roleId = $_SESSION["roleId"] = $conn->escape_values($_POST["roleId"]);
+
+        if(empty($genderId) || empty($roleId)){
+            $errors['invalid_selection'] = "Invalid selectionSomething missing"; 
+        }
+        if(!count($errors)){
+            $cols = ['genderId', 'roleId'];
+            $vals = [$genderId, $roleId];
+            $where = ['userId' => $_SESSION['consort']['userId']];
+
+            $data = array_combine($cols, $vals);
+            $complete_reg = $conn->update('users', $data, $where);
+            if($complete_reg === TRUE){
+                $_SESSION["consort"]["genderId"] = $genderId;
+                $_SESSION["consort"]["roleId"] = $roleId;
+                header('Location: dashboard.php');
+                exit();
+            }
+        }else{
+            $ObjGlob->setMsg('msg', 'Error(s)', 'invalid');
+            $ObjGlob->setMsg('errors', $errors, 'invalid');
+        }
+
+    }
+}
+public function update_profile($conn, $ObjGlob, $ObjSendMail, $lang, $conf){
+    if(isset($_POST["update_profile"])){
+        $errors = array();
+
+        $fullname = $_SESSION["fullname"] = $conn->escape_values(ucwords(strtolower($_POST["fullname"])));
+        $email_address = $_SESSION["email_address"] = $conn->escape_values(strtolower($_POST["email_address"]));
+        $username = $_SESSION["username"] = $conn->escape_values(strtolower($_POST["username"]));
+
+
+
+
+        $genderId = $_SESSION["genderId"] = $conn->escape_values($_POST["genderId"]);
+    }
+}
+}
+?>
