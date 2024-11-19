@@ -165,4 +165,32 @@ public function set_password($conn, $ObjGlob, $ObjSendMail, $lang, $conf){
     }
 
 }
+public function profile($conn){
+    // Start the session (if not already started)
+    if (session_status() == PHP_SESSION_NONE) {
+      session_start();
+  }
+  
+    if (isset($_SESSION['userId'])){
+      $userId = $_SESSION['userId'];
+  
+      var_dump($userId);
+      //fetch users data
+      $user= $conn->select("SELECT fullname, username, email FROM users WHERE userId = ?", [$userId]);
+  
+      if($user){
+        echo "<h1>Profile</h1>";
+        echo "<h2>WELCOME TO YOUR PROFILE," . $user['fullname'] . "</h2>";
+        echo "<p><strong>Username: </strong>" . $user['username'] . "</p>";
+        echo "<p><strong>Email: </strong>" . $user['email'] . "</p>";
+      } else {
+        
+        echo "<p>Sorry, user not found</p>";
+      }
+    } else {
+      
+      echo "<p>Sorry, you are not logged in</p>";
+    }
+  
+    }
 }
