@@ -72,7 +72,7 @@ public function sign_up_form($ObjGlob){
 
 
     <?php                    
-    }public function create_password_form($ObjGlob){
+    }public function create_password_form($ObjGlob, $conn){
         ?>
         <div class="row align-items-md-stretch">
             <div class="col-md-6">
@@ -95,7 +95,7 @@ public function sign_up_form($ObjGlob){
                         <label for="repeat_password" class="form-label">Repeat Password:</label>
                         <input type="password" id="repeat_password" name="repeat_password" class="form-control form-control-lg" maxlength="50" placeholder="Repeat your password..." <?php print(isset($_SESSION["repeat_password"]))? 'value"' . $_SESSION["repeat_password"]. '"' : ''; unset($_SESSION["repeat_password"]); ?> >
                     </div>
-                    <button type="submit" name="set_password" class="btn btn-primary">Set Password</button>	
+                    <button type="submit" name="create_password" class="btn btn-primary">Set Password</button>	
                     <form>
                 </div>
             </div>

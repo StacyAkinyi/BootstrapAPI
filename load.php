@@ -38,7 +38,7 @@ $conn = new dbConnection(DBTYPE, HOSTNAME, DBPORT, HOSTUSER, HOSTPASS, DBNAME);
 $ObjAuth = new auth();
 $ObjAuth->signup($conn, $ObjGlob, $ObjSendMail, $lang, $conf);
 $ObjAuth->verify_code($conn, $ObjGlob, $ObjSendMail, $lang, $conf);
-$ObjAuth->set_password($conn, $ObjGlob, $ObjSendMail, $lang, $conf);
+$ObjAuth->create_password($conn, $ObjGlob, $ObjSendMail, $lang, $conf);
 $ObjAuth->signin($conn, $ObjGlob, $ObjSendMail, $lang, $conf);
 $ObjAuth->signout($conn, $ObjGlob, $ObjSendMail, $lang, $conf);
 $ObjAuth->save_details($conn, $ObjGlob, $ObjSendMail, $lang, $conf);

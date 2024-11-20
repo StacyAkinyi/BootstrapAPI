@@ -25,9 +25,11 @@ class auth{
 // =============================================
 // Sanitize all inputs
 // verify that the fullname has only letters, space, dash, quotation
-if(ctype_alpha(str_replace("","", str_replace("\'", "", $fullname))) === FALSE){
-    $errors['nameLetters_err'] = "Invalid name format: Fullname should only contain letters, spaces, dashes and quotes" . $fullname;
-}
+
+//if(ctype_alpha(str_replace("","", str_replace("\'", "", $fullname))) === FALSE){
+  //  $errors['nameLetters_err'] = "Invalid name format: Fullname should only contain letters, spaces, dashes and quotes" . $fullname;
+//} 
+
 // verify that the email has got the correct format
 if(!filter_var($email, FILTER_VALIDATE_EMAIL)){
     $errors['email_format_err'] = "Invalid email format: " ;
@@ -128,8 +130,8 @@ public function verify_code($conn, $ObjGlob, $ObjSendMail, $lang, $conf){
     }
 }
 }
-public function set_password($conn, $ObjGlob, $ObjSendMail, $lang, $conf){
-    if (isset($_POST["set_password"])){
+public function create_password($conn, $ObjGlob, $ObjSendMail, $lang, $conf){
+    if (isset($_POST["create_password"])){
         $errors = array();
         $password = $_SESSION['password']= $conn->escape_values($_POST['password']);
         $repeat_password = $_SESSION['repeat_password']= $conn->escape_values($_POST['repeat_password']);
@@ -147,7 +149,7 @@ public function set_password($conn, $ObjGlob, $ObjSendMail, $lang, $conf){
             $password = password_hash($repeat_password, PASSWORD_DEFAULT);
 
             $cols = ['password', 'ver_code', 'ver_code_time'];
-            $vals = [$hash_pass, 0, $conf['ver_code_timeout']];
+            $vals = [$password, 0, $conf['ver_code_timeout']];
             $where = ['ver_code' => $_SESSION['code_verified']];
 
             $data = array_combine($cols, $vals);
